@@ -15,8 +15,6 @@
                 <div class="featured-image mb-3">
                     <img src="images/logo.png" class="img-fluid" style="width: 250px;">
                 </div>
-                <!-- <p class="text-white fs-2" style="font-family: 'Courier New', Courier, monospace; font-weight: 600;">Be Verified</p>
-                <small class="text-white text-wrap text-center" style="width: 17rem;font-family: 'Courier New', Courier, monospace;">Join experienced Designers on this platform.</small> -->
             </div> 
             <div class="col-md-6 right-box">
                 <div class="row align-items-center">
@@ -26,30 +24,124 @@
                         <p>&#x2190; User info</p>
                     </div>
                     <form action="">
-                        <div class="input-group mb-4">
-                            <input type="text" class="form-control form-control-lg bg-light fs-6" placeholder="First Name">
-                        </div>
-                        <div class="input-group mb-4">
-                            <input type="text" class="form-control form-control-lg bg-light fs-6" placeholder="Last Name">
-                        </div>
-                        <div class="input-group mb-4">
-                            <input type="email" class="form-control form-control-lg bg-light fs-6" placeholder="Email address">
-                        </div>
-                        <div class="input-group mb-4">
-                            <div class="col me-2">
-                                <input type="text" class="form-control form-control-lg bg-light fs-6" placeholder="Adress">
+                        <div id="first-set">
+                            <div class="input-group mb-4">
+                                <input type="text" class="form-control form-control-lg bg-light fs-6" placeholder="First Name">
                             </div>
-                            <div class="col ms-2">
-                                <input type="text" class="form-control form-control-lg bg-light fs-6" placeholder="Phone">
+                            <div class="input-group mb-4">
+                                <input type="text" class="form-control form-control-lg bg-light fs-6" placeholder="Last Name">
+                            </div>
+                            <div class="input-group mb-4">
+                                <input type="email" class="form-control form-control-lg bg-light fs-6" placeholder="Email address">
+                            </div>
+                            <div class="input-group mb-4">
+                                <div class="col me-2">
+                                    <input type="text" class="form-control form-control-lg bg-light fs-6" placeholder="Adress">
+                                </div>
+                                <div class="col ms-2">
+                                    <input type="text" class="form-control form-control-lg bg-light fs-6" placeholder="Phone">
+                                </div>
+                            </div>
+                            <div class="input-group mt-4 mb-3">
+                                <button id="next-btn" class="btn btn-lg btn-primary w-100 fs-6" style="background: #a4b5e9; border-color: #a4b5e9;">Next &#8594;</button>
                             </div>
                         </div>
-                        <div class="input-group mt-4 mb-3">
-                            <button class="btn btn-lg btn-primary w-100 fs-6" style="background: #a4b5e9; border-color: #a4b5e9;">Register Informations</button>
+
+                        <div id="next-set" style="display: none;">
+                            <div class="input-group mb-4">
+                                <select id="country-select" class="form-control form-control-lg bg-light fs-6">
+                                    <!-- Country options will be populated dynamically -->
+                                </select>
+                            </div>
+                    
+                            <div class="input-group mb-4">
+                                <select class="form-select input-group" aria-label="Default select example">
+                                    <option disabled selected>Choose your Region</option>
+                                    <option value="1">Adamawa</option>
+                                    <option value="2">Centre</option>
+                                    <option value="3">East</option>
+                                    <option value="4">Far North</option>
+                                    <option value="5">Littoral</option>
+                                    <option value="6">North</option>
+                                    <option value="7">Northwest</option>
+                                    <option value="8">South</option>
+                                    <option value="9">Southwest</option>
+                                    <option value="10">West</option>
+                                </select>
+                            </div>
+                            <div class="input-group mb-4">
+                                <input type="text" class="form-control form-control-lg bg-light fs-6" placeholder="Enter your town">
+                            </div>
+                            <div class="input-group mt-4 mb-3">
+                                <button class="btn btn-lg btn-primary w-100 fs-6" style="background: #a4b5e9; border-color: #a4b5e9;">Register Informations</button>
+                            </div>
                         </div>
                     </form>
                 </div>
             </div> 
         </div>
     </div>
+
+    <script>
+        document.getElementById('next-btn').addEventListener('click', function(event) {
+            event.preventDefault();
+            // Hide current inputs
+            document.getElementById('first-set').style.display = 'none';
+            
+            // Show the next set of inputs
+            document.getElementById('next-set').style.display = 'block';
+        });
+    </script>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Get reference to the select element
+            const countrySelect = document.getElementById('country-select');
+            
+            // Fetch country data
+            fetch('https://restcountries.com/v3.1/all')
+                .then(response => response.json())
+                .then(data => {
+                    // Sort countries alphabetically
+                    data.sort((a, b) => a.name.common.localeCompare(b.name.common));
+                    
+                    // Populate the select element with country options
+                    data.forEach(country => {
+                        const option = document.createElement('option');
+                        option.value = country.name.common;
+                        option.textContent = `${country.flags ? country.flags.emoji : ''} ${country.name.common}`;
+                        countrySelect.appendChild(option);
+                    });
+                    
+                    // Automatically select the user's country if possible
+                    if ("geolocation" in navigator) {
+                        navigator.geolocation.getCurrentPosition(position => {
+                            const { latitude, longitude } = position.coords;
+                            fetch(`https://geocode.xyz/${latitude},${longitude}?json=1`)
+                                .then(response => response.json())
+                                .then(data => {
+                                    const userCountry = data.country;
+                                    if (userCountry) {
+                                        countrySelect.value = userCountry;
+                                    }
+                                })
+                                .catch(error => console.error('Error fetching user location:', error));
+                        });
+                    }
+                })
+                .catch(error => console.error('Error fetching countries:', error));
+        });
+
+        document.getElementById('next-btn').addEventListener('click', function(event) {
+            // Prevent form submission
+            event.preventDefault();
+
+            // Get the selected country
+            const selectedCountry = document.getElementById('country-select').value;
+            console.log('Selected country:', selectedCountry);
+            // You can perform further actions here
+        });
+    </script>
+
 </body>
 </html>
