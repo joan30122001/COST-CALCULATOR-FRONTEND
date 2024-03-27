@@ -54,3 +54,40 @@ body{
      }
 
 }
+
+
+.btn-outline-customs {
+    color: #ff9933; /* Specify your text color */
+    background-color: #fff; /* Specify your background color */
+    border-color: #ff9933; /* Specify your border color */
+}
+#success-outlined:hover + .btn.btn-outline-customs {
+    color: #ff9933;
+    border-color: #ff9933;
+}
+#success-outlined:checked + .btn.btn-outline-customs {
+    color: #fff; /* Specify your hover text color */
+    background-color: #ff9933; /* Specify your hover background color */
+    border-color: #ff9933; /* Specify your hover border color */
+}
+
+
+.btn-outline-custom {
+    color: #0b6491; /* Specify your text color */
+    background-color: #fff; /* Specify your background color */
+    border-color: #0b6491; /* Specify your border color */
+}
+#danger-outlined:hover + .btn.btn-outline-custom {
+    color: #0b6491;
+    border-color: #0b6491;
+}
+#danger-outlined:checked + .btn.btn-outline-custom {
+    color: #fff; /* Specify your hover text color */
+    background-color: #0b6491; /* Specify your hover background color */
+    border-color: #0b6491; /* Specify your hover border color */
+}
+
+.btn-primary:hover,
+.btn-primary:focus {
+    background-color: #0b6491;
+}
